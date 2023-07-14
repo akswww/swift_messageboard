@@ -25,7 +25,6 @@ class ViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        print("123")
     }
    
     func setupUI() {
@@ -56,7 +55,10 @@ class ViewController : UIViewController {
     }
     
     func setupTextView() {
-        strTextview.layer.backgroundColor = UIColor.red.cgColor
+        strTextview.layer.borderColor = CGColor.init(red: 0, green: 0, blue: 1, alpha: 1)
+        strTextview.layer.borderWidth = 0.5
+        strTextview.layer.cornerRadius = 10.0
+        
     }
     
     func setupTableView() {
@@ -234,7 +236,8 @@ class ViewController : UIViewController {
             }
             addMessage()
             fetchFromDB()
-            clear((Any).self)
+            nameTextfield.text = ""
+            strTextview.text = ""
             let alertController = UIAlertController(
                 title: "成功",
                 message: "成功發送訊息",
@@ -272,7 +275,8 @@ class ViewController : UIViewController {
                 dog[0].message = strTextview.text!
                 fetchFromDB()
             }
-            clear((Any).self)
+            nameTextfield.text = ""
+            strTextview.text = ""
             add111 = 0
         default:
             print("")
