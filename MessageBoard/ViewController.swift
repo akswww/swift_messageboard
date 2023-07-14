@@ -25,7 +25,7 @@ class ViewController : UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
- 
+        print("123")
     }
    
     func setupUI() {
