@@ -6,9 +6,7 @@
 //
 import RealmSwift
 import UIKit
-import SwiftUI
 class ViewController : UIViewController {
-    
     @IBOutlet weak var sortButtom: UIButton!
     @IBOutlet weak var peopleLabel: UILabel!
     @IBOutlet weak var messageLabel: UILabel!
@@ -34,14 +32,18 @@ class ViewController : UIViewController {
         setupTableView()
         setupDB()
         disKey()
+        
     }
+    
     @objc func dismissKeyBoard() {
             self.view.endEditing(true)
         }
+    
     func disKey(){
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(dismissKeyBoard))
                 self.view.addGestureRecognizer(tap)
     }
+    
     func setupLabel() {
         peopleLabel.text = "你的名字"
         messageLabel.text = "內容"
@@ -108,11 +110,13 @@ class ViewController : UIViewController {
             realm.delete(del)
         }
     }
+    
     func setTime() -> Int {
         let now = Date()
         let timeInterval = now.timeIntervalSince1970
         return Int(timeInterval)
     }
+    
     func showAlert(){
         let alertController = UIAlertController(title: "時間排序", message:"",
                                                 preferredStyle: .actionSheet)
@@ -149,13 +153,16 @@ class ViewController : UIViewController {
         alertController.addAction(sendBtn2)
         self.present(alertController, animated: true)
     }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
     @IBAction func sorT(_ sender: UIButton) {
         showAlert()
     }
+    
     @IBAction func clear(_ sender: Any) {
         let alertController = UIAlertController(
             title: "警告",
@@ -174,99 +181,30 @@ class ViewController : UIViewController {
         nameTextfield.text = ""
         strTextview.text = ""
     }
+    
     @IBAction func sendButton(_ sender: UIButton) {
         switch add111{
         case 0:
             if nameTextfield.text == "" && strTextview.text == "" {
                 // 建立一個提示框
-                    let alertController = UIAlertController(
-                        title: "錯誤",
-                        message: "請輸入名字跟訊息",
-                        preferredStyle: .alert)
-                    // 建立[取消]按鈕
-                    let cancelAction = UIAlertAction(
-                      title: "確定",
-                      style: .cancel,
-                      handler: nil)
-                    alertController.addAction(cancelAction)
-                    // 顯示提示框
-                self.present(
-                      alertController,
-                      animated: true,
-                      completion: nil)
+                alert.showA(title: "錯誤", title1: "確定", message: "請輸入內容與訊息", view: self)
                 break
             }
             if strTextview.text == "" {
-                // 建立一個提示框
-                    let alertController = UIAlertController(
-                        title: "錯誤",
-                        message: "請輸入訊息",
-                        preferredStyle: .alert)
-                    // 建立[取消]按鈕
-                    let cancelAction = UIAlertAction(
-                      title: "確定",
-                      style: .cancel,
-                      handler: nil)
-                    alertController.addAction(cancelAction)
-                    // 顯示提示框
-                self.present(
-                      alertController,
-                      animated: true,
-                      completion: nil)
+                alert.showA(title: "錯誤", title1: "確定", message: "請輸入訊息", view: self)
                 break
             }
             if nameTextfield.text == "" {
-                // 建立一個提示框
-                    let alertController = UIAlertController(
-                        title: "錯誤",
-                        message: "請輸入名字",
-                        preferredStyle: .alert)
-                    // 建立[取消]按鈕
-                    let cancelAction = UIAlertAction(
-                      title: "確定",
-                      style: .cancel,
-                      handler: nil)
-                    alertController.addAction(cancelAction)
-                    // 顯示提示框
-                self.present(
-                      alertController,
-                      animated: true,
-                      completion: nil)
+                alert.showA(title: "錯誤", title1: "確定", message: "請輸入名字", view: self)
                 break
             }
             addMessage()
             fetchFromDB()
             nameTextfield.text = ""
             strTextview.text = ""
-            let alertController = UIAlertController(
-                title: "成功",
-                message: "成功發送訊息",
-                preferredStyle: .alert)
-            // 建立[取消]按鈕
-            let cancelAction = UIAlertAction(
-              title: "確定",
-              style: .cancel,
-              handler: nil)
-            alertController.addAction(cancelAction)
-            self.present(
-                  alertController,
-                  animated: true,
-                  completion: nil)
+            alert.showA(title: "成功", title1: "確定", message: "成功輸入", view: self)
         case 1:
-            let alertController = UIAlertController(
-                title: "成功",
-                message: "成功編輯訊息",
-                preferredStyle: .alert)
-            // 建立[取消]按鈕
-            let cancelAction = UIAlertAction(
-              title: "確定",
-              style: .cancel,
-              handler: nil)
-            alertController.addAction(cancelAction)
-            self.present(
-                  alertController,
-                  animated: true,
-                  completion: nil)
+                alert.showA(title: "成功", title1: "確定", message: "成功編輯", view: self)
             let realm = try! Realm()
             let predicate = NSPredicate(format: "time == \(tempTime)")
             let dog = realm.objects(RealmModel.self).filter(predicate)
@@ -282,38 +220,27 @@ class ViewController : UIViewController {
             print("")
         }
     }
+    
+    func jumpAlert(indexPath: Int,indexPath2:IndexPath) {
+        alert.showA(title: "警告", message: "已刪除訊息", title2: "取消", title3: "刪除", action: {
+            self.deleteMessage(time: self.f[indexPath].time)
+            self.messageTableview.deleteRows(at: [indexPath2], with: .fade)
+            self.fetchFromDB()
+        }, view: self)
+    }
 }
 
 extension ViewController:UITableViewDataSource, UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return f.count
     }
+    
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let likeAction = UIContextualAction(style: .normal, title: "刪除") {
+        let likeAction = UIContextualAction(style: .destructive, title: "刪除") {
             [self] (action, view, completionHandler) in
-                let alertController = UIAlertController(
-                    title: "送出",
-                    message: "確認要送出了嗎？",
-                    preferredStyle: .alert)
-                let cancelAction = UIAlertAction(
-                  title: "取消",
-                  style: .cancel,
-                  handler: nil)
-                alertController.addAction(cancelAction)
-                let okAction = UIAlertAction(
-                  title: "刪除",
-                  style: .default) { _ in
-                      deleteMessage(time: f[indexPath.row].time)
-                     self.fetchFromDB()
-                  }
-                alertController.addAction(okAction)
-            self.present(
-                  alertController,
-                  animated: true,
-                  completion: nil)
+            jumpAlert(indexPath: indexPath.row, indexPath2: indexPath)
             
-//            deleteMessage(time: f[indexPath.row].time)
-//            self.fetchFromDB()
             completionHandler(true)
         }
         likeAction.backgroundColor = UIColor.red
@@ -342,5 +269,4 @@ extension ViewController:UITableViewDataSource, UITableViewDelegate {
         cell.textCell.text =  f[indexPath.row].message
         return cell
     }
-    
 }

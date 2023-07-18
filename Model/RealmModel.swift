@@ -12,7 +12,7 @@ class RealmModel: Object {
        @Persisted(primaryKey: true) var _id: ObjectId
        @Persisted var message: String = ""
        @Persisted var people: String = ""
-        @Persisted var time:Int
+       @Persisted var time:Int
     convenience init(people: String, message: String, time:Int) {
       self.init()
       self.message = message
@@ -21,9 +21,13 @@ class RealmModel: Object {
   }
 }
 struct message123 {
+    
     var id:ObjectId
+    
     var time:Int
+    
     var people:String
+    
     var message:String
 }
 
